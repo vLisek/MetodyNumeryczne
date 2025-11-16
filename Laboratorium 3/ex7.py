@@ -10,7 +10,7 @@ def wyznacz_punkty(liczba_podzialow, lewy_koniec, prawy_koniec):
 
 
 # --- Zmienne podstawowe ---
-zmienna_symboliczna = Symbol('x')
+zmienna_symboliczna = Symbol("x")
 poczatek_przedzialu = 0
 koniec_przedzialu = 1
 liczba_przedzialow = 3

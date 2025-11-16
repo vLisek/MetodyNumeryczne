@@ -9,16 +9,15 @@ def wyznacz_punkty(liczba_przedzialow, lewy_koniec, prawy_koniec):
     return lista_punktow
 
 
-# --- Dane podstawowe ---
-zmienna_symboliczna = Symbol('x')
-
+# --- Zmienne podstawowe ---
+zmienna_symboliczna = Symbol("x")
 poczatek_przedzialu = -3
 koniec_przedzialu = 1
 
 # Funkcja całkowana
 funkcja_calkowana = sin(zmienna_symboliczna) * exp(-3 * zmienna_symboliczna) + zmienna_symboliczna**3
 
-# Liczba podprzedziałów (musi być parzysta!)
+# Liczba podprzedziałów
 liczba_przedzialow = 4
 
 # Krok całkowania
@@ -61,6 +60,6 @@ maksymalna_wartosc_pochodnej_4 = max(
     abs(pochodna_4.subs(zmienna_symboliczna, koniec_przedzialu))
 )
 
-blad_maxymalny = ((koniec_przedzialu - poczatek_przedzialu) * (dlugosc_kroku ** 4)) / 180 * maksymalna_wartosc_pochodnej_4
+blad_maksymalny = ((koniec_przedzialu - poczatek_przedzialu) * (dlugosc_kroku ** 4)) / 180 * maksymalna_wartosc_pochodnej_4
 
-print(f"Szacowany błąd maksymalny ≈ {float(blad_maxymalny)}")
+print(f"Szacowany błąd maksymalny ≈ {float(blad_maksymalny)}")
