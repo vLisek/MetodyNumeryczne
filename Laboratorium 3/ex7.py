@@ -1,56 +1,33 @@
-from sympy import Symbol, sqrt, diff
+from sympy import Symbol, sqrt, diff, Abs
 
-# --- Funkcja wyznaczająca punkty podziału przedziału ---
-def wyznacz_punkty(liczba_podzialow, lewy_koniec, prawy_koniec):
-    lista_punktow = []
-    for nr in range(liczba_podzialow + 1):
-        punkt = lewy_koniec + (nr / liczba_podzialow) * (prawy_koniec - lewy_koniec)
-        lista_punktow.append(punkt)
-    return lista_punktow
+# --- Ustawienia i zmienne ---
+x, a, b, n = Symbol("x"), 0, 1, 3
+f = sqrt(1 + x)         # Funkcja całkowania
+h = (b - a) / n         # Krok całkowania
+nodes = [a + i * h for i in range(n + 1)] # Węzły podziału
 
-
-# --- Zmienne podstawowe ---
-zmienna_symboliczna = Symbol("x")
-poczatek_przedzialu = 0
-koniec_przedzialu = 1
-liczba_przedzialow = 3
-
-# Funkcja całkowana
-funkcja_calkowana = sqrt(1 + zmienna_symboliczna)
-
-# --- Wyznaczenie punktów podziału ---
-wezly_calkowania = wyznacz_punkty(liczba_przedzialow, poczatek_przedzialu, koniec_przedzialu)
-
-# --- Krok całkowania ---
-dlugosc_kroku = (koniec_przedzialu - poczatek_przedzialu) / liczba_przedzialow
 
 # --- Metoda trapezów ---
-suma_wartosci_funkcji = 0
-
-# Dodawanie wartości w węzłach wewnętrznych
-for numer in range(1, liczba_przedzialow):
-    suma_wartosci_funkcji += funkcja_calkowana.subs(zmienna_symboliczna, wezly_calkowania[numer])
-
-# Dodanie wartości na końcach przedziału z wagą 1/2
-suma_wartosci_funkcji += (
-    funkcja_calkowana.subs(zmienna_symboliczna, poczatek_przedzialu)
-    + funkcja_calkowana.subs(zmienna_symboliczna, koniec_przedzialu)
-) / 2
-
-# Wynik przybliżony całki
-wartosc_przyblizona_calki = dlugosc_kroku * suma_wartosci_funkcji
-
-print(f"Całka [{poczatek_przedzialu}, {koniec_przedzialu}] z sqrt(1+x) dx")
-print(f"Wynik metody trapezów ≈ {float(wartosc_przyblizona_calki)}")
+# Suma f(x_i) dla węzłów wewnętrznych (i = 1 do n - 1)
+S = sum(f.subs(x, nodes[i]) for i in range(1, n))
 
 
-# --- Liczenie błędu ---
-pochodna_pierwsza = diff(funkcja_calkowana, zmienna_symboliczna)
-pochodna_druga = diff(pochodna_pierwsza, zmienna_symboliczna)
+# Dodanie końców przedziału (wagi 1/2)
+S += (f.subs(x, a) + f.subs(x, b)) / 2
+val = h * S             # Wynik przybliżony
 
-# Maksimum wartości bezwzględnej drugiej pochodnej w przedziale [0,1]
-maksymalna_wartosc_bezwzgledna_pochodnej_drugiej = abs(pochodna_druga.subs(zmienna_symboliczna, poczatek_przedzialu))
 
-blad_metody_trapezow = ((koniec_przedzialu - poczatek_przedzialu) ** 3 / (12 * liczba_przedzialow ** 2)) * maksymalna_wartosc_bezwzgledna_pochodnej_drugiej
+print(f"Całka [{a}, {b}] z sqrt(1+x) dx")
+print(f"Wynik metody trapezów ≈ {float(val)}")
 
-print(f"Szacowany błąd ≈ {float(blad_metody_trapezow)}")
+
+# --- Szacowanie błędu ---
+f_pp = diff(f, x, 2)    # Druga pochodna
+
+# Maksimum |f''(x)| w [a,b]. Dla tej f, jest w x=a.
+M2 = Abs(f_pp.subs(x, a))
+
+# Obliczanie błędu
+error = ((b - a)**3 / (12 * n**2)) * M2
+
+print(f"Szacowany błąd ≈ {float(error)}")
